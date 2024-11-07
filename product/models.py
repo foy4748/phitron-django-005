@@ -22,7 +22,7 @@ class Review(models.Model):
 
 
 class Cart(models.Model):
-    cart_owner = models.ForeignKey(People, on_delete=models.CASCADE)
+    cart_owner = models.OneToOneField(People, on_delete=models.CASCADE)
     product_count = models.PositiveIntegerField(default=0)  # type: ignore
     total_price = models.DecimalField(default=0.00, max_digits=10, decimal_places=2)
 
