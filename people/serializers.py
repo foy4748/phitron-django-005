@@ -58,3 +58,8 @@ class RegistrationSerializer(serializers.ModelSerializer):
             basic_info=user, image_url=image_url, phone_no=phone_no)
 
         return user
+
+
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField(max_length=2028)
+    password = serializers.CharField(max_length=2028)
