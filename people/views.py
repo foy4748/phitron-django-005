@@ -76,7 +76,10 @@ class UserLoginView(APIView):
             login(request,user)
             token, is_token_was_created = Token.objects.get_or_create(user=user)
 
-            return Response({"success": True, "token_was_created": is_token_was_created, "message": "User LoggedIn", "token":token.key,"user_id":user.id})
+            h = dict()
+            h['Authorization'] = f"Token {token.key}"
+            h['Content-Type'] = "application/json"
+            return Response({"success": True, "token_was_created": is_token_was_created, "message": "User LoggedIn", "token":token.key,"user_id":user.id},headers=h)
         else:
             return Response({"success": False, "message": "User NOT Found"})
 
