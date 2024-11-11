@@ -38,6 +38,7 @@ class SingleReviewView(RetrieveAPIView):
         data = get_object_or_404(
             Review,
             id=self.kwargs.get('pk'))
+        # Checking Permission
         self.check_object_permissions(self.request, data)
 
         return data
@@ -46,7 +47,7 @@ class SingleReviewView(RetrieveAPIView):
 class CreateReviewView(CreateAPIView):
     serializer_class = ReviewSerializer
     # queryset = Review.objects.all()
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
 
 class UpdateReviewView(UpdateAPIView):
