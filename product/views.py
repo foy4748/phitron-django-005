@@ -1,5 +1,5 @@
 # from django.utils.http import urlsafe_base64_encode
-from rest_framework.generics import CreateAPIView, ListAPIView, UpdateAPIView, RetrieveAPIView, get_object_or_404
+from rest_framework.generics import CreateAPIView, ListAPIView, UpdateAPIView, RetrieveAPIView, DestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 
 from product.models import Product, Review
@@ -49,6 +49,11 @@ class CreateReviewView(CreateAPIView):
     serializer_class = ReviewSerializer
     # queryset = Review.objects.all()
     permission_classes = [IsAuthenticated]
+
+class DeleteReviewView(DestroyAPIView):
+    serializer_class = ReviewSerializer
+    permission_classes = [IsAuthenticated, IsOwner]
+    queryset = Review.objects.all()
 
 
 class UpdateReviewView(UpdateAPIView):
