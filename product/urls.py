@@ -10,7 +10,9 @@ urlpatterns = [
     path("", CreateProductView.as_view(), name='product_create'),
     path("product-list/", GetProductsView.as_view(), name='product_list'),
     path("review-list/", ReviewListView.as_view(), name='review_list'),
-    path("review-detail/<int:pk>/", SingleReviewView.as_view(), name='review_detail'),
+    path("review-detail/<int:pk>/", SingleReviewView.as_view(),
+         name='review_detail'),
     path("review-create/", CreateReviewView.as_view(), name='review_create'),
-    path("review-update/<int:pk>/", UpdateReviewView.as_view(), name='review_update'),
+    path("review-update/<int:pk>/",
+         UpdateReviewView.as_view(), name='review_update'),
 ]
