@@ -25,23 +25,24 @@ class ReviewListView(ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        data = Review.objects.filter(reviewer=self.request.user.people_info)
+        data = Review.objects.filter(reviewer=self.request.user)
         return data
 
 
 class SingleReviewView(RetrieveAPIView):
     serializer_class = ReviewSerializer
     permission_classes = [IsAuthenticated, IsOwner]
+    queryset = Review.objects.all()
 
-    def get_object(self):
-        data = None
-        data = get_object_or_404(
-            Review,
-            id=self.kwargs.get('pk'))
-        # Checking Permission
-        self.check_object_permissions(self.request, data)
+    # def get_object(self):
+    #     data = None
+    #     data = get_object_or_404(
+    #         Review,
+    #         id=self.kwargs.get('pk'))
+    #     # Checking Permission
+    #     self.check_object_permissions(self.request, data)
 
-        return data
+    #     return data
 
 
 class CreateReviewView(CreateAPIView):
