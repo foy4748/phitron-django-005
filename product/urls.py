@@ -1,7 +1,7 @@
 from django.urls import path  # ,include
 # from rest_framework.routers import DefaultRouter
 
-from product.views import CreateProductView, CreateReviewView, DeleteProductView, DeleteReviewView, ProductListView, ReviewListView, SingleProductView, SingleReviewView, UpdateProductView, UpdateReviewView
+from product.views import CreateCategoryView, CreateProductView, CreateReviewView, DeleteProductView, DeleteReviewView, ProductListView, ReviewListView, SingleProductView, SingleReviewView, UpdateProductView, UpdateReviewView
 
 # router = DefaultRouter()  # amader router
 
@@ -9,6 +9,9 @@ from product.views import CreateProductView, CreateReviewView, DeleteProductView
 urlpatterns = [
     # Product urls
     path("", CreateProductView.as_view(), name='product_create'),
+
+    path("category-create/", CreateCategoryView.as_view(), name='category_create'),
+
     path("product-list/", ProductListView.as_view(), name='product_list'),
     path("product-detail/<pk>/", SingleProductView.as_view(),
          name='product_detail'),

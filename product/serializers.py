@@ -1,7 +1,13 @@
 from rest_framework import serializers
 
 # from people.models import People
-from product.models import Product, Review
+from product.models import Product, ProductCategory, Review
+
+class ProductCategorySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ProductCategory
+        fields = "__all__"
 
 
 class ProductSerializer(serializers.ModelSerializer):
