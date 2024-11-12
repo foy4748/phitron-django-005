@@ -3,7 +3,7 @@ from rest_framework.generics import CreateAPIView, ListAPIView, UpdateAPIView, R
 from rest_framework.permissions import IsAuthenticated
 
 from product.models import Product, Review
-from product.serializers import ProductSerializer, ReviewSerializer
+from product.serializers import ProductSerializer, ReviewSerializer, ReviewUpdateSerializer
 from rest_framework.response import Response
 from utils.access_control import IsOwner
 
@@ -57,5 +57,6 @@ class DeleteReviewView(DestroyAPIView):
 
 
 class UpdateReviewView(UpdateAPIView):
-    serializer_class = ReviewSerializer
-    permission_classes = [IsAuthenticated]
+    serializer_class = ReviewUpdateSerializer
+    permission_classes = [IsAuthenticated, IsOwner]
+    queryset = Review.objects.all()

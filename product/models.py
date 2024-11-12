@@ -6,9 +6,13 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 # Create your models here.
+class ProductCategory(models.Model):
+    category = models.CharField(max_length=2048)
+
 class Product(models.Model):
     product_owner = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="owned_products")
+    category = models.ForeignKey(ProductCategory, on_delete=models.SET_NULL,null=True)
     product_name = models.CharField(max_length=1024)
     image_url = models.URLField()
     unit_price = models.DecimalField(max_digits=12, decimal_places=2)
