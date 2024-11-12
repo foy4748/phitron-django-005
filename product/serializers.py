@@ -10,6 +10,12 @@ class ProductSerializer(serializers.ModelSerializer):
         model = Product
         fields = "__all__"
 
+class ProductUpdateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Product
+        exclude = ('id','product_owner')
+
 
 class ReviewSerializer(serializers.ModelSerializer):
 

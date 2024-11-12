@@ -3,19 +3,37 @@ from rest_framework.generics import CreateAPIView, ListAPIView, UpdateAPIView, R
 from rest_framework.permissions import IsAuthenticated
 
 from product.models import Product, Review
-from product.serializers import ProductSerializer, ReviewSerializer, ReviewUpdateSerializer
+from product.serializers import ProductSerializer, ProductUpdateSerializer, ReviewSerializer, ReviewUpdateSerializer
 from rest_framework.response import Response
-from utils.access_control import IsOwner
+from utils.access_control import IsProductOwner, IsReviewOwner
 
 
 # Create your views here.
+
+# PRODUCT RELATED =============
 class CreateProductView(CreateAPIView):
     serializer_class = ProductSerializer
+    permission_classes = [IsAuthenticated]
     queryset = Product.objects.all()
 
 
-class GetProductsView(ListAPIView):
+class ProductListView(ListAPIView):
     serializer_class = ProductSerializer
+    queryset = Product.objects.all()
+
+class SingleProductView(RetrieveAPIView):
+    serializer_class = ProductSerializer
+    queryset = Product.objects.all()
+
+class DeleteProductView(DestroyAPIView):
+    serializer_class = ProductSerializer
+    permission_classes = [IsAuthenticated, IsProductOwner]
+    queryset = Product.objects.all()
+
+
+class UpdateProductView(UpdateAPIView):
+    serializer_class = ProductUpdateSerializer
+    permission_classes = [IsAuthenticated, IsProductOwner]
     queryset = Product.objects.all()
 
 
@@ -31,7 +49,7 @@ class ReviewListView(ListAPIView):
 
 class SingleReviewView(RetrieveAPIView):
     serializer_class = ReviewSerializer
-    permission_classes = [IsAuthenticated, IsOwner]
+    permission_classes = [IsAuthenticated, IsReviewOwner]
     queryset = Review.objects.all()
 
     # def get_object(self):
@@ -50,13 +68,14 @@ class CreateReviewView(CreateAPIView):
     # queryset = Review.objects.all()
     permission_classes = [IsAuthenticated]
 
+
 class DeleteReviewView(DestroyAPIView):
     serializer_class = ReviewSerializer
-    permission_classes = [IsAuthenticated, IsOwner]
+    permission_classes = [IsAuthenticated, IsReviewOwner]
     queryset = Review.objects.all()
 
 
 class UpdateReviewView(UpdateAPIView):
     serializer_class = ReviewUpdateSerializer
-    permission_classes = [IsAuthenticated, IsOwner]
+    permission_classes = [IsAuthenticated, IsReviewOwner]
     queryset = Review.objects.all()
