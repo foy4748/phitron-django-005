@@ -54,8 +54,9 @@ class RegistrationSerializer(serializers.ModelSerializer):
         user.save()
 
         # Create the People instance
-        People.objects.create(
-            basic_info=user, image_url=image_url, phone_no=phone_no)
+        current_people = People.objects.create(
+            basic_info=user, image_url=image_url, phone_no=phone_no, active_status=False, balance=0.00)
+        user.people_info = current_people
 
         return user
 

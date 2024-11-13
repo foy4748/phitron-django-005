@@ -2,11 +2,11 @@
 from rest_framework.generics import CreateAPIView, ListAPIView, UpdateAPIView, RetrieveAPIView, DestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 
-from product.models import Product, Review
-from product.serializers import ProductCategorySerializer, ProductSerializer, ProductUpdateSerializer, ReviewSerializer, ReviewUpdateSerializer
+from product.models import CartItem, Product, Review
+from product.serializers import CartItemCreateSerializer, CartItemSerializer, CartItemUpdateSerializer, ProductCategorySerializer, ProductSerializer, ProductUpdateSerializer, ReviewSerializer, ReviewUpdateSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.response import Response
-from utils.access_control import IsProductOwner, IsReviewOwner
+from utils.access_control import IsCartItemOwner, IsProductOwner, IsReviewOwner
 
 
 # Create your views here.
@@ -95,3 +95,34 @@ class UpdateReviewView(UpdateAPIView):
 
     def get_queryset(self):
         return Review.objects.filter(reviewer=self.request.user)
+
+# Cart Related
+class CartItemListView(ListAPIView):
+    serializer_class = CartItemSerializer
+    permission_classes = [IsAuthenticated, IsCartItemOwner]
+
+    def get_queryset(self):
+        data = CartItem.objects.filter(cart_item_owner=self.request.user)
+        return data
+
+
+class CreateCartItemView(CreateAPIView):
+    serializer_class = CartItemCreateSerializer
+    # queryset = Review.objects.all()
+    permission_classes = [IsAuthenticated]
+
+class DeleteCartItemView(DestroyAPIView):
+    serializer_class = CartItemSerializer
+    permission_classes = [IsAuthenticated, IsCartItemOwner]
+
+    def get_queryset(self):
+        return CartItem.objects.filter(cart_item_owner=self.request.user)
+
+
+class UpdateCartItemView(UpdateAPIView):
+    serializer_class = CartItemUpdateSerializer
+    permission_classes = [IsAuthenticated, IsCartItemOwner]
+    # queryset = Review.objects.all()
+
+    def get_queryset(self):
+        return CartItem.objects.filter(cart_item_owner=self.request.user)

@@ -1,6 +1,11 @@
 from rest_framework import permissions
 from rest_framework.response import Response
 
+class IsCartItemOwner(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        # Check if the user is the owner of the object
+        permission_ok = obj.cart_item_owner == request.user
+        return permission_ok
 
 class IsReviewOwner(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
