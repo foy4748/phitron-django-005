@@ -10,12 +10,13 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
+        ("product", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name="People",
+            name="CartItem",
             fields=[
                 (
                     "id",
@@ -26,19 +27,19 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("image_url", models.URLField()),
-                ("phone_no", models.CharField(max_length=12)),
-                ("active_status", models.BooleanField(default=False)),
+                ("quantity", models.PositiveIntegerField(default=1)),
                 (
-                    "balance",
-                    models.DecimalField(decimal_places=2, default=0.0, max_digits=12),
+                    "cart_item_owner",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
                 ),
                 (
-                    "basic_info",
-                    models.OneToOneField(
+                    "product",
+                    models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="people_info",
-                        to=settings.AUTH_USER_MODEL,
+                        to="product.product",
                     ),
                 ),
             ],

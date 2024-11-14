@@ -2,11 +2,11 @@
 from rest_framework.generics import CreateAPIView, ListAPIView, UpdateAPIView, RetrieveAPIView, DestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 
-from product.models import CartItem, Product, Review
-from product.serializers import CartItemCreateSerializer, CartItemSerializer, CartItemUpdateSerializer, ProductCategorySerializer, ProductSerializer, ProductUpdateSerializer, ReviewSerializer, ReviewUpdateSerializer
+from product.models import Product
+from product.serializers import  ProductCategorySerializer, ProductSerializer, ProductUpdateSerializer
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.response import Response
-from utils.access_control import IsCartItemOwner, IsProductOwner, IsReviewOwner
+# from rest_framework.response import Response
+from utils.access_control import IsProductOwner
 
 
 # Create your views here.
@@ -43,86 +43,3 @@ class UpdateProductView(UpdateAPIView):
     serializer_class = ProductUpdateSerializer
     permission_classes = [IsAuthenticated, IsProductOwner]
     queryset = Product.objects.all()
-
-
-# REVIEW RELATED =============
-class ReviewListView(ListAPIView):
-    serializer_class = ReviewSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        data = Review.objects.filter(reviewer=self.request.user)
-        return data
-
-
-class SingleReviewView(RetrieveAPIView):
-    serializer_class = ReviewSerializer
-    permission_classes = [IsAuthenticated, IsReviewOwner]
-
-    def get_queryset(self):
-        return Review.objects.filter(reviewer=self.request.user)
-
-
-    # def get_object(self):
-    #     data = None
-    #     data = get_object_or_404(
-    #         Review,
-    #         id=self.kwargs.get('pk'))
-    #     # Checking Permission
-    #     self.check_object_permissions(self.request, data)
-
-    #     return data
-
-
-class CreateReviewView(CreateAPIView):
-    serializer_class = ReviewSerializer
-    # queryset = Review.objects.all()
-    permission_classes = [IsAuthenticated]
-
-
-class DeleteReviewView(DestroyAPIView):
-    serializer_class = ReviewSerializer
-    permission_classes = [IsAuthenticated, IsReviewOwner]
-
-    def get_queryset(self):
-        return Review.objects.filter(reviewer=self.request.user)
-
-
-class UpdateReviewView(UpdateAPIView):
-    serializer_class = ReviewUpdateSerializer
-    permission_classes = [IsAuthenticated, IsReviewOwner]
-    # queryset = Review.objects.all()
-
-    def get_queryset(self):
-        return Review.objects.filter(reviewer=self.request.user)
-
-# Cart Related
-class CartItemListView(ListAPIView):
-    serializer_class = CartItemSerializer
-    permission_classes = [IsAuthenticated, IsCartItemOwner]
-
-    def get_queryset(self):
-        data = CartItem.objects.filter(cart_item_owner=self.request.user)
-        return data
-
-
-class CreateCartItemView(CreateAPIView):
-    serializer_class = CartItemCreateSerializer
-    # queryset = Review.objects.all()
-    permission_classes = [IsAuthenticated]
-
-class DeleteCartItemView(DestroyAPIView):
-    serializer_class = CartItemSerializer
-    permission_classes = [IsAuthenticated, IsCartItemOwner]
-
-    def get_queryset(self):
-        return CartItem.objects.filter(cart_item_owner=self.request.user)
-
-
-class UpdateCartItemView(UpdateAPIView):
-    serializer_class = CartItemUpdateSerializer
-    permission_classes = [IsAuthenticated, IsCartItemOwner]
-    # queryset = Review.objects.all()
-
-    def get_queryset(self):
-        return CartItem.objects.filter(cart_item_owner=self.request.user)
