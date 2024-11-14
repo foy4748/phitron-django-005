@@ -15,7 +15,7 @@ class CartItemSerializer(serializers.ModelSerializer):
     cart_item_owner = UserListSerializer()
     class Meta:
         model = CartItem
-        depth = 2
+        depth = 1
         fields = "__all__"
 
 class CartItemUpdateSerializer(serializers.ModelSerializer):
