@@ -1,22 +1,38 @@
 # from django.utils.http import urlsafe_base64_encode
-from rest_framework.generics import CreateAPIView, ListAPIView, UpdateAPIView, RetrieveAPIView, DestroyAPIView
+from utils.access_control import IsProductOwner
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.generics import (
+    CreateAPIView,
+    ListAPIView,
+    UpdateAPIView,
+    RetrieveAPIView,
+    DestroyAPIView,
+)
 from rest_framework.permissions import IsAuthenticated
 
 from product.models import Product
-from product.serializers import  ProductCategorySerializer, ProductSerializer, ProductUpdateSerializer
-from django_filters.rest_framework import DjangoFilterBackend
+from product.serializers import (
+    ProductCategorySerializer,
+    ProductDetailSerializer,
+    ProductSerializer,
+    ProductUpdateSerializer,
+)
+
 # from rest_framework.response import Response
-from utils.access_control import IsProductOwner
 
 
 # Create your views here.
+
 
 class CreateCategoryView(CreateAPIView):
     serializer_class = ProductCategorySerializer
     permission_classes = [IsAuthenticated]
     # queryset = Product.objects.all()
 
+
 # PRODUCT RELATED =============
+
+
 class CreateProductView(CreateAPIView):
     serializer_class = ProductSerializer
     permission_classes = [IsAuthenticated]
@@ -27,11 +43,13 @@ class ProductListView(ListAPIView):
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['category']
+    filterset_fields = ["category"]
+
 
 class SingleProductView(RetrieveAPIView):
-    serializer_class = ProductSerializer
+    serializer_class = ProductDetailSerializer
     queryset = Product.objects.all()
+
 
 class DeleteProductView(DestroyAPIView):
     serializer_class = ProductSerializer
