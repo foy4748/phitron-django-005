@@ -1,9 +1,20 @@
-from rest_framework.generics import CreateAPIView, ListAPIView, UpdateAPIView, RetrieveAPIView, DestroyAPIView
+from rest_framework.generics import (
+    CreateAPIView,
+    ListAPIView,
+    UpdateAPIView,
+    RetrieveAPIView,
+    DestroyAPIView,
+)
 from rest_framework.permissions import IsAuthenticated
 
-from review.serializers import  ReviewSerializer, ReviewUpdateSerializer
+from review.serializers import (
+    ReviewCreateSerializer,
+    ReviewSerializer,
+    ReviewUpdateSerializer,
+)
 from review.models import Review
-from utils.access_control import  IsReviewOwner
+from utils.access_control import IsReviewOwner
+
 
 # Create your views here.
 class ReviewListView(ListAPIView):
@@ -22,7 +33,6 @@ class SingleReviewView(RetrieveAPIView):
     def get_queryset(self):
         return Review.objects.filter(reviewer=self.request.user)
 
-
     # def get_object(self):
     #     data = None
     #     data = get_object_or_404(
@@ -35,7 +45,7 @@ class SingleReviewView(RetrieveAPIView):
 
 
 class CreateReviewView(CreateAPIView):
-    serializer_class = ReviewSerializer
+    serializer_class = ReviewCreateSerializer
     # queryset = Review.objects.all()
     permission_classes = [IsAuthenticated]
 
