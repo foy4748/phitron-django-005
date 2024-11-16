@@ -9,7 +9,7 @@ from product.models import Product
 class CartItem(models.Model):
     cart_item_owner = models.ForeignKey(User, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField(default=1)  # type: ignore
+    quantity = models.PositiveIntegerField(default=1, blank=True)  # type: ignore
 
     class Meta:
         unique_together = ("cart_item_owner", "product")
