@@ -7,7 +7,7 @@ from people.models import People
 class PeopleSerializer(serializers.ModelSerializer):
     class Meta:
         model = People
-        fields = ['image_url', 'phone_no']
+        fields = ["image_url", "phone_no"]
 
 
 class UserListSerializer(serializers.ModelSerializer):
@@ -16,6 +16,7 @@ class UserListSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
+            "id",
             "username",
             "first_name",
             "last_name",
@@ -41,7 +42,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
             "image_url",
             "phone_no",
         ]
-        extra_kwargs = {'password': {'write_only': True}}
+        extra_kwargs = {"password": {"write_only": True}}
 
     def create(self, validated_data):
         image_url = validated_data.pop("image_url")
@@ -55,7 +56,12 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
         # Create the People instance
         current_people = People.objects.create(
-            basic_info=user, image_url=image_url, phone_no=phone_no, active_status=False, balance=0.00)
+            basic_info=user,
+            image_url=image_url,
+            phone_no=phone_no,
+            active_status=False,
+            balance=0.00,
+        )
         user.people_info = current_people
 
         return user
