@@ -1,3 +1,4 @@
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.generics import (
     CreateAPIView,
     ListAPIView,
@@ -24,6 +25,13 @@ class ReviewListView(ListAPIView):
     def get_queryset(self):
         data = Review.objects.filter(reviewer=self.request.user)
         return data
+
+
+class ProductSpecificReviewListView(ListAPIView):
+    serializer_class = ReviewSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["product"]
+    queryset = Review.objects.all()
 
 
 class SingleReviewView(RetrieveAPIView):
