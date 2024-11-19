@@ -13,6 +13,7 @@ from rest_framework.permissions import IsAuthenticated
 from product.models import Product
 from product.serializers import (
     ProductCategorySerializer,
+    ProductCreateSerializer,
     ProductDetailSerializer,
     ProductSerializer,
     ProductUpdateSerializer,
@@ -34,7 +35,7 @@ class CreateCategoryView(CreateAPIView):
 
 
 class CreateProductView(CreateAPIView):
-    serializer_class = ProductSerializer
+    serializer_class = ProductCreateSerializer
     permission_classes = [IsAuthenticated]
     # queryset = Product.objects.all()
 
