@@ -5,22 +5,24 @@ from people.serializers import UserListSerializer
 
 
 class CartItemCreateSerializer(serializers.ModelSerializer):
+    cart_item_owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
     class Meta:
         model = CartItem
         # depth = 1
         fields = ["product", "quantity"]
 
-    def create(self, validated_data):
-        product = validated_data.get("product")
-        quantity = validated_data.get("quantity")
-        if bool(quantity) is False:
-            quantity = 1
-        cart_item_owner = self.context["request"].user
+    # def create(self, validated_data):
+    #     product = validated_data.get("product")
+    #     quantity = validated_data.get("quantity")
+    #     if bool(quantity) is False:
+    #         quantity = 1
+    #     cart_item_owner = self.context["request"].user
 
-        cart_item = CartItem.objects.create(
-            product=product, quantity=quantity, cart_item_owner=cart_item_owner
-        )
-        return cart_item
+    #     cart_item = CartItem.objects.create(
+    #         product=product, quantity=quantity, cart_item_owner=cart_item_owner
+    #     )
+    #     return cart_item
 
 
 class CartItemSerializer(serializers.ModelSerializer):
