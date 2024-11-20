@@ -1,14 +1,20 @@
 from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
+
 # from rest_framework import viewsets
 from rest_framework.decorators import api_view, permission_classes
 
-from people.serializers import LoginSerializer, RegistrationSerializer, UserListSerializer
+from people.serializers import (
+    LoginSerializer,
+    RegistrationSerializer,
+    UserListSerializer,
+)
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth.tokens import default_token_generator
+
 # from django.utils.http import urlsafe_base64_encode  # , urlsafe_base64_decode
 from rest_framework.permissions import IsAuthenticated
 from django.utils.encoding import force_bytes
@@ -16,6 +22,7 @@ from django.utils.encoding import force_bytes
 # from django.contrib.auth.models import User
 
 from django.contrib.auth import authenticate, login, logout
+
 # from rest_framework.authtoken.models import Token
 
 # for sending email
@@ -48,8 +55,8 @@ class UserRegistrationApiView(APIView):
             # confirm_link = f"http://127.0.0.1:3000/patient/active/{uid}/{token}"
             # email_subject = "Confirm Your Email"
             # email_body = render_to_string(
-                    #     "confirm_email.html", {"confirm_link": confirm_link}
-                    # )
+            #     "confirm_email.html", {"confirm_link": confirm_link}
+            # )
 
             # email = EmailMultiAlternatives(email_subject, "", to=[user.email])
             # email.attach_alternative(email_body, "text/html")
@@ -60,32 +67,47 @@ class UserRegistrationApiView(APIView):
 
 class UserLoginView(APIView):
     # serializer_class = LoginSerializer)
-    
+
     def post(self, request):
         s = LoginSerializer(data=request.data)
         user = None
         if s.is_valid():
-            current_username = s.validated_data.get('username', None)
-            current_password = s.validated_data.get('password')
-            user = authenticate(request, username=current_username, password=current_password)
+            current_username = s.validated_data.get("username", None)
+            current_password = s.validated_data.get("password")
+            user = authenticate(
+                request, username=current_username, password=current_password
+            )
 
         else:
             return Response(s.errors)
 
         if user is not None:
-            login(request,user)
+            login(request, user)
             token, is_token_was_created = Token.objects.get_or_create(user=user)
 
             h = dict()
-            h['Authorization'] = f"Token {token.key}"
-            h['Content-Type'] = "application/json"
-            return Response({"success": True, "token_was_created": is_token_was_created, "message": "User LoggedIn", "token":token.key,"user_id":user.id},headers=h)
+            h["Authorization"] = f"Token {token.key}"
+            h["Content-Type"] = "application/json"
+            return Response(
+                {
+                    "success": True,
+                    "token_was_created": is_token_was_created,
+                    "message": "User LoggedIn",
+                    "token": token.key,
+                    "user_id": user.id,
+                    "email": user.email,
+                    "first_name": user.first_name,
+                    "last_name": user.last_name,
+                    "image_url": user.people_info.image_url,
+                    "phone_no": user.people_info.phone_no,
+                },
+                headers=h,
+            )
         else:
-            return Response({"success": False, "message": "User NOT Found"})
+            return Response({"success": False, "message": "Authentication Failed"})
 
 
-@api_view(['GET'])
+@api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def test_protected_route(_):
-    return Response({"success":True,"message":"User is authenticated"})
-
+    return Response({"success": True, "message": "User is authenticated"})
