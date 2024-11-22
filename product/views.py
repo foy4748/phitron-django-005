@@ -10,7 +10,7 @@ from rest_framework.generics import (
 )
 from rest_framework.permissions import IsAuthenticated
 
-from product.models import Product
+from product.models import Product, ProductCategory
 from product.serializers import (
     ProductCategorySerializer,
     ProductCreateSerializer,
@@ -29,6 +29,11 @@ class CreateCategoryView(CreateAPIView):
     serializer_class = ProductCategorySerializer
     permission_classes = [IsAuthenticated]
     # queryset = Product.objects.all()
+
+
+class CategoryListView(ListAPIView):
+    serializer_class = ProductCategorySerializer
+    queryset = ProductCategory.objects.all()
 
 
 # PRODUCT RELATED =============
