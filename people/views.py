@@ -4,8 +4,11 @@ from rest_framework.authtoken.models import Token
 
 # from rest_framework import viewsets
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework.generics import UpdateAPIView
 
+from people.models import People
 from people.serializers import (
+    BalanceDepositeSerializer,
     LoginSerializer,
     RegistrationSerializer,
     UserListSerializer,
@@ -105,6 +108,16 @@ class UserLoginView(APIView):
             )
         else:
             return Response({"success": False, "message": "Authentication Failed"})
+
+
+class BalanceDepositeView(UpdateAPIView):
+    serializer_class = BalanceDepositeSerializer
+    permission_classes = [IsAuthenticated]
+    queryset = People.objects.all()
+
+    def get_object(self):
+        user_id = self.request.user.id
+        return People.objects.get(basic_info__id=user_id)
 
 
 @api_view(["GET"])
