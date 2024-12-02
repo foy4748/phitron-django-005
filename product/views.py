@@ -1,5 +1,6 @@
 # from django.utils.http import urlsafe_base64_encode
 from utils.access_control import IsProductOwner
+from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.generics import (
     CreateAPIView,
@@ -48,8 +49,12 @@ class CreateProductView(CreateAPIView):
 class ProductListView(ListAPIView):
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["category"]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = {
+        "category": ["exact"],
+        "unit_price": ["gte", "gt", "exact", "lt", "lte"],
+    }
+    search_fields = ["product_name", "description"]
 
 
 class SingleProductView(RetrieveAPIView):
