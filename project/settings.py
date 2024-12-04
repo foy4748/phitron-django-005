@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "people",
     "product",
     "cart_item",
+    "purchase_item",
     "review",
 ]
 
