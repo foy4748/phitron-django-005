@@ -5,6 +5,7 @@ from django.db import transaction
 from cart_item.models import CartItem
 from cart_item.serializers import CartItemSerializer
 from purchase_item.models import PurchasedItem
+from purchase_item.serializers import PurchasedItemSerializer
 
 
 # Create your views here.
@@ -13,18 +14,24 @@ from purchase_item.models import PurchasedItem
 @transaction.atomic
 def PurchaseItemView(request):
     cart_items = CartItem.objects.filter(cart_item_owner=request.user)
-    s = CartItemSerializer(cart_items, many=True)
+    purchased_items = list()
     for item in cart_items:
-        purchase_item = PurchasedItem(
+        single_purchased_item = PurchasedItem(
             purchased_item_owner=request.user,
             product=item.product,
             unit_price=item.product.unit_price,
             unit_name=item.product.unit_name,
             quantity=item.quantity,
         )
-        print(purchase_item)
-        # purchase_item.save()
+        item.delete()
+        single_purchased_item.save()
+        purchased_items.append(single_purchased_item)
 
+    s = PurchasedItemSerializer(purchased_items, many=True)
     return Response(
-        {"success": True, "message": "Product Purchased Successfully", "s": s.data}
+        {
+            "success": True,
+            "message": "Product(s) Purchased Successfully",
+            "s": s.data,
+        }
     )
