@@ -1,4 +1,5 @@
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.db import transaction
@@ -8,7 +9,10 @@ from purchase_item.models import PurchasedItem
 from purchase_item.serializers import PurchasedItemSerializer
 
 
-# Create your views here.
+## Create your views here.
+
+
+# Performing Purchase operation of items in the cart
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 @transaction.atomic
@@ -32,6 +36,16 @@ def PurchaseItemView(request):
         {
             "success": True,
             "message": "Product(s) Purchased Successfully",
-            "s": s.data,
+            "purchased_items": s.data,
         }
     )
+
+
+# User specific Purchased Item List
+class PurchasedItemListView(ListAPIView):
+    serializer_class = PurchasedItemSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        data = PurchasedItem.objects.filter(purchased_item_owner=self.request.user)
+        return data
