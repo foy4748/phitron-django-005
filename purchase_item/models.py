@@ -12,6 +12,7 @@ class PurchasedItem(models.Model):
     unit_name = models.CharField(max_length=128)
 
     quantity = models.PositiveIntegerField(default=1, blank=True)  # type: ignore
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.purchased_item_owner} - {self.product}"

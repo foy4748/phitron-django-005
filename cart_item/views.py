@@ -1,14 +1,29 @@
-from rest_framework.generics import CreateAPIView, ListAPIView, UpdateAPIView,  DestroyAPIView
+from rest_framework.filters import OrderingFilter
+from cart_item.serializers import CartItemSerializer
+from rest_framework.generics import (
+    CreateAPIView,
+    ListAPIView,
+    UpdateAPIView,
+    DestroyAPIView,
+)
 from rest_framework.permissions import IsAuthenticated
 from utils.access_control import IsCartItemOwner
 
 from cart_item.models import CartItem
-from cart_item.serializers import CartItemCreateSerializer, CartItemSerializer, CartItemUpdateSerializer
+from cart_item.serializers import (
+    CartItemCreateSerializer,
+    CartItemSerializer,
+    CartItemUpdateSerializer,
+)
+
 
 # Create your views here.
 class CartItemListView(ListAPIView):
     serializer_class = CartItemSerializer
     permission_classes = [IsAuthenticated, IsCartItemOwner]
+    filter_backends = [OrderingFilter]
+    ordering_fields = ["created_at", "updated_at"]
+    ordering = ["-created_at"]
 
     def get_queryset(self):
         data = CartItem.objects.filter(cart_item_owner=self.request.user)
@@ -19,6 +34,7 @@ class CreateCartItemView(CreateAPIView):
     serializer_class = CartItemCreateSerializer
     # queryset = Review.objects.all()
     permission_classes = [IsAuthenticated]
+
 
 class DeleteCartItemView(DestroyAPIView):
     serializer_class = CartItemSerializer

@@ -1,3 +1,4 @@
+from rest_framework.filters import OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.generics import (
     CreateAPIView,
@@ -21,6 +22,9 @@ from utils.access_control import IsReviewOwner
 class ReviewListView(ListAPIView):
     serializer_class = ReviewSerializer
     permission_classes = [IsAuthenticated]
+    filter_backends = [OrderingFilter]
+    ordering_fields = ["created_at", "updated_at"]
+    ordering = ["-created_at"]
 
     def get_queryset(self):
         data = Review.objects.filter(reviewer=self.request.user)
@@ -29,8 +33,10 @@ class ReviewListView(ListAPIView):
 
 class ProductSpecificReviewListView(ListAPIView):
     serializer_class = ReviewSerializer
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_fields = ["product"]
+    ordering_fields = ["created_at", "updated_at"]
+    ordering = ["-created_at"]
     queryset = Review.objects.all()
 
 

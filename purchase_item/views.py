@@ -1,10 +1,10 @@
+from rest_framework.filters import OrderingFilter
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.db import transaction
 from cart_item.models import CartItem
-from cart_item.serializers import CartItemSerializer
 from purchase_item.models import PurchasedItem
 from purchase_item.serializers import PurchasedItemSerializer
 
@@ -45,6 +45,9 @@ def PurchaseItemView(request):
 class PurchasedItemListView(ListAPIView):
     serializer_class = PurchasedItemSerializer
     permission_classes = [IsAuthenticated]
+    filter_backends = [OrderingFilter]
+    ordering_fields = ["created_at", "updated_at"]
+    ordering = ["-created_at"]
 
     def get_queryset(self):
         data = PurchasedItem.objects.filter(purchased_item_owner=self.request.user)
