@@ -19,26 +19,40 @@ from purchase_item.serializers import PurchasedItemSerializer
 def PurchaseItemView(request):
     cart_items = CartItem.objects.filter(cart_item_owner=request.user)
     purchased_items = list()
+    current_total = 0
     for item in cart_items:
-        single_purchased_item = PurchasedItem(
-            purchased_item_owner=request.user,
-            product=item.product,
-            unit_price=item.product.unit_price,
-            unit_name=item.product.unit_name,
-            quantity=item.quantity,
+        current_total = current_total + float(item.quantity) * float(
+            item.product.unit_price
         )
-        item.delete()
-        single_purchased_item.save()
-        purchased_items.append(single_purchased_item)
 
-    s = PurchasedItemSerializer(purchased_items, many=True)
-    return Response(
-        {
-            "success": True,
-            "message": "Product(s) Purchased Successfully",
-            "purchased_items": s.data,
-        }
-    )
+    if current_total <= float(request.user.people_info.balance):
+        for item in cart_items:
+            single_purchased_item = PurchasedItem(
+                purchased_item_owner=request.user,
+                product=item.product,
+                unit_price=item.product.unit_price,
+                unit_name=item.product.unit_name,
+                quantity=item.quantity,
+            )
+            item.delete()
+            single_purchased_item.save()
+            purchased_items.append(single_purchased_item)
+
+        s = PurchasedItemSerializer(purchased_items, many=True)
+        return Response(
+            {
+                "success": True,
+                "message": "Product(s) Purchased Successfully",
+                "purchased_items": s.data,
+            }
+        )
+    else:
+        return Response(
+            {
+                "success": False,
+                "message": "Product(s) Purchase FAILED. Insufficient Balance",
+            }
+        )
 
 
 # User specific Purchased Item List
