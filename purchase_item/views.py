@@ -7,6 +7,7 @@ from django.db import transaction
 from cart_item.models import CartItem
 from purchase_item.models import PurchasedItem
 from purchase_item.serializers import PurchasedItemSerializer
+from utils import send_email
 
 
 ## Create your views here.
@@ -39,6 +40,15 @@ def PurchaseItemView(request):
             purchased_items.append(single_purchased_item)
 
         s = PurchasedItemSerializer(purchased_items, many=True)
+        # Emailing Confirmations
+        # send_email.success_email(
+        #     request=request,
+        #     subject="Puchased Items successfully",
+        #     message="Great, You've puchased these",
+        #     success_url="/",
+        #     # Need to UPDATE
+        #     domain="/",
+        # )
         return Response(
             {
                 "success": True,
