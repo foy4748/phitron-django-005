@@ -4,10 +4,11 @@ from rest_framework.authtoken.models import Token
 
 # from rest_framework import viewsets
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.generics import UpdateAPIView
+from rest_framework.generics import UpdateAPIView, RetrieveAPIView
 
 from people.models import People
 from people.serializers import (
+    BalanceCheckSerializer,
     BalanceDepositeSerializer,
     LoginSerializer,
     RegistrationSerializer,
@@ -118,6 +119,14 @@ class BalanceDepositeView(UpdateAPIView):
     def get_object(self):
         user_id = self.request.user.id
         return People.objects.get(basic_info__id=user_id)
+
+
+class BalanceCheckView(RetrieveAPIView):
+    serializer_class = BalanceCheckSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return People.objects.get(basic_info=self.request.user)
 
 
 @api_view(["GET"])

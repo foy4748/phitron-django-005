@@ -83,3 +83,9 @@ class BalanceDepositeSerializer(serializers.ModelSerializer):
         instance.balance += validated_data["amount"]
         instance.save()
         return instance
+
+
+class BalanceCheckSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = People
+        fields = ["balance"]
