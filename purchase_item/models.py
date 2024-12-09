@@ -6,7 +6,9 @@ from product.models import Product
 
 # Create your models here.
 class PurchasedItem(models.Model):
-    purchased_item_owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    purchased_item_owner = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="purchased_products"
+    )
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
     unit_price = models.DecimalField(max_digits=12, decimal_places=2)
     unit_name = models.CharField(max_length=128)
