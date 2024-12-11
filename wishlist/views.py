@@ -1,13 +1,22 @@
-from django.shortcuts import render
-from django_filters.filters import OrderingFilter
+from rest_framework.filters import OrderingFilter
 from rest_framework.exceptions import NotFound
-from rest_framework.generics import DestroyAPIView, ListAPIView, RetrieveAPIView
+from rest_framework.generics import (
+    CreateAPIView,
+    DestroyAPIView,
+    ListAPIView,
+    RetrieveAPIView,
+)
 from rest_framework.permissions import IsAuthenticated
 
 from wishlist.models import WishListItem
-from wishlist.serializers import WishItemSerializer
+from wishlist.serializers import WishItemCreateSerializer, WishItemSerializer
 
 # Create your views here.
+
+
+class WishItemCreateView(CreateAPIView):
+    serializer_class = WishItemCreateSerializer
+    permission_classes = [IsAuthenticated]
 
 
 class WishItemListView(ListAPIView):

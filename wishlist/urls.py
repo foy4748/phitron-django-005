@@ -2,17 +2,19 @@ from django.urls import path
 
 from wishlist.views import (
     ProductSpecificWishItem,
+    WishItemCreateView,
     WishItemDeleteView,
     WishItemListView,
 )  # ,include
 
 urlpatterns = [
     # Review urls
-    path("wishitem-create/", WishItemListView.as_view(), name="wishitem_create"),
+    path("create/", WishItemCreateView.as_view(), name="wishitem_create"),
+    path("list/", WishItemListView.as_view(), name="wishitem_list"),
     path(
-        "wishitem-detail/<pk>/",
+        "detail/<pk>/",
         ProductSpecificWishItem.as_view(),
         name="wishitem_detail",
     ),
-    path("wishitem-delete/<pk>/", WishItemDeleteView.as_view(), name="wishitem_delete"),
+    path("delete/<pk>/", WishItemDeleteView.as_view(), name="wishitem_delete"),
 ]
