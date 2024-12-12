@@ -48,3 +48,6 @@ class ProductSpecificWishItem(RetrieveAPIView):
 class WishItemDeleteView(DestroyAPIView):
     serializer_class = WishItemSerializer
     permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return WishListItem.objects.filter(id=self.kwargs.get("pk"))

@@ -9,4 +9,4 @@ class PurchasedItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PurchasedItem
-        fields = ["product", "unit_price", "unit_name", "quantity"]
+        exclude = ("purchased_item_owner",)

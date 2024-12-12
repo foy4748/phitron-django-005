@@ -1,9 +1,12 @@
 from rest_framework import serializers
 
+from product.serializers import ProductSerializer
 from wishlist.models import WishListItem
 
 
 class WishItemSerializer(serializers.ModelSerializer):
+    product = ProductSerializer()
+
     class Meta:
         model = WishListItem
         exclude = ("wish_item_owner",)
