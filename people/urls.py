@@ -14,6 +14,7 @@ urlpatterns = [
     # path("login/", include(router.urls)),
     path("register/", views.UserRegistrationApiView.as_view(), name="register_people"),
     path("login/", views.UserLoginView.as_view(), name="login_people"),
+    path("logout/", views.LogOutView.as_view(), name="logout_people"),
     path("deposite/", views.BalanceDepositeView.as_view(), name="update_balance"),
     path("balance/", views.BalanceCheckView.as_view(), name="check_balance"),
     path("", views.test_protected_route, name="test_protected_route"),

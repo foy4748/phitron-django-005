@@ -16,6 +16,7 @@ from people.serializers import (
 )
 
 from rest_framework.views import APIView
+from rest_framework import status
 from rest_framework.response import Response
 from django.contrib.auth.tokens import default_token_generator
 
@@ -39,7 +40,7 @@ from django.contrib.auth import authenticate, login, logout
 class UserRegistrationApiView(APIView):
     serializer_class = RegistrationSerializer
 
-    def get(self, request):
+    def get(self):
         users = User.objects.all()
         serializer = UserListSerializer(users, many=True)
         return Response(serializer.data)
@@ -49,11 +50,11 @@ class UserRegistrationApiView(APIView):
 
         if serializer.is_valid():
             user = serializer.save()
-            print(user)
+            # print(user)
             token = default_token_generator.make_token(user)
-            print("token ", token)
+            # print("token ", token)
             uid = urlsafe_base64_encode(force_bytes(user.pk))
-            print("uid ", uid)
+            # print("uid ", uid)
 
             # Email Related
             # confirm_link = f"http://127.0.0.1:3000/patient/active/{uid}/{token}"
@@ -65,7 +66,13 @@ class UserRegistrationApiView(APIView):
             # email = EmailMultiAlternatives(email_subject, "", to=[user.email])
             # email.attach_alternative(email_body, "text/html")
             # email.send()
-            return Response("Check your mail for confirmation")
+            return Response(
+                {
+                    "message": "Check your mail for confirmation",
+                    "token": token,
+                    "uid": uid,
+                }
+            )
         return Response(serializer.errors)
 
 
@@ -127,6 +134,17 @@ class BalanceCheckView(RetrieveAPIView):
 
     def get_object(self):
         return People.objects.get(basic_info=self.request.user)
+
+
+class LogOutView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        try:
+            request.user.auth_token.delete()
+            return Response(status=status.HTTP_200_OK)
+        except AttributeError:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(["GET"])
