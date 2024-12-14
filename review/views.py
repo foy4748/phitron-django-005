@@ -40,6 +40,18 @@ class ProductSpecificReviewListView(ListAPIView):
     queryset = Review.objects.all()
 
 
+class UserAndProductSpecificReviewListView(ListAPIView):
+    serializer_class = ReviewSerializer
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
+    filterset_fields = ["product"]
+    ordering_fields = ["created_at", "updated_at"]
+    ordering = ["-created_at"]
+
+    def get_queryset(self):
+        queryset = Review.objects.filter(reviewer=self.request.user)
+        return queryset
+
+
 class SingleReviewView(RetrieveAPIView):
     serializer_class = ReviewSerializer
     permission_classes = [IsAuthenticated, IsReviewOwner]

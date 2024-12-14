@@ -8,6 +8,7 @@ from review.views import (
     ReviewListView,
     SingleReviewView,
     UpdateReviewView,
+    UserAndProductSpecificReviewListView,
 )
 
 
@@ -23,6 +24,11 @@ urlpatterns = [
         "product-review-list/",
         ProductSpecificReviewListView.as_view(),
         name="product_review_list",
+    ),
+    path(
+        "product-user-review-list/",
+        UserAndProductSpecificReviewListView.as_view(),
+        name="product_user_review_list",
     ),
     path("review-detail/<pk>/", SingleReviewView.as_view(), name="review_detail"),
     path("review-delete/<pk>/", DeleteReviewView.as_view(), name="review_delete"),
