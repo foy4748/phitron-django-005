@@ -45,6 +45,14 @@ class RegistrationSerializer(serializers.ModelSerializer):
         extra_kwargs = {"password": {"write_only": True}}
 
     def create(self, validated_data):
+        isEmailExist = User.objects.filter(email=validated_data["email"]).exists()
+        isUsernameExist = User.objects.filter(
+            username=validated_data["username"]
+        ).exists()
+        if isEmailExist:
+            raise serializers.ValidationError({"error": "Email Already exists"})
+        if isUsernameExist:
+            raise serializers.ValidationError({"error": "Username Already exists"})
         image_url = validated_data.pop("image_url")
         phone_no = validated_data.pop("phone_no")
 
@@ -52,6 +60,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
         password = validated_data.pop("password")
         user = User(**validated_data)
         user.set_password(password)
+        user.is_active = False
         user.save()
 
         # Create the People instance
@@ -68,8 +77,8 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
 
 class LoginSerializer(serializers.Serializer):
-    username = serializers.CharField(max_length=2028)
-    password = serializers.CharField(max_length=2028)
+    username = serializers.CharField(max_length=2028, required=True)
+    password = serializers.CharField(max_length=2028, required=True)
 
 
 class BalanceDepositeSerializer(serializers.ModelSerializer):

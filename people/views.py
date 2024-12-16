@@ -5,6 +5,7 @@ from rest_framework.authtoken.models import Token
 # from rest_framework import viewsets
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.generics import UpdateAPIView, RetrieveAPIView
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 
 from people.models import People
 from people.serializers import (
@@ -52,9 +53,9 @@ class UserRegistrationApiView(APIView):
             user = serializer.save()
             # print(user)
             token = default_token_generator.make_token(user)
-            # print("token ", token)
+            print("token ", token)
             uid = urlsafe_base64_encode(force_bytes(user.pk))
-            # print("uid ", uid)
+            print("uid ", uid)
 
             # Email Related
             # confirm_link = f"http://127.0.0.1:3000/patient/active/{uid}/{token}"
@@ -92,30 +93,51 @@ class UserLoginView(APIView):
         else:
             return Response(s.errors)
 
-        if user is not None:
-            login(request, user)
-            token, is_token_was_created = Token.objects.get_or_create(user=user)
-
-            h = dict()
-            h["Authorization"] = f"Token {token.key}"
-            h["Content-Type"] = "application/json"
-            return Response(
-                {
-                    "success": True,
-                    "token_was_created": is_token_was_created,
-                    "message": "User LoggedIn",
-                    "token": token.key,
-                    "user_id": user.id,
-                    "email": user.email,
-                    "first_name": user.first_name,
-                    "last_name": user.last_name,
-                    "image_url": user.people_info.image_url,
-                    "phone_no": user.people_info.phone_no,
-                },
-                headers=h,
-            )
-        else:
+        if user is None:
             return Response({"success": False, "message": "Authentication Failed"})
+
+        # Without activation, Login won't be allowed
+        if user.is_active is False:
+            return Response({"success": False, "message": "User is not activated"})
+
+        login(request, user)
+        token, is_token_was_created = Token.objects.get_or_create(user=user)
+
+        h = dict()
+        h["Authorization"] = f"Token {token.key}"
+        h["Content-Type"] = "application/json"
+        return Response(
+            {
+                "success": True,
+                "token_was_created": is_token_was_created,
+                "message": "User LoggedIn",
+                "token": token.key,
+                "user_id": user.id,
+                "email": user.email,
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+                "image_url": user.people_info.image_url,
+                "phone_no": user.people_info.phone_no,
+            },
+            headers=h,
+        )
+
+
+# Account Activation
+@api_view(["GET"])
+def activate(_, uid64, token):
+    try:
+        uid = urlsafe_base64_decode(uid64).decode()
+        user = User._default_manager.get(pk=uid)
+    except User.DoesNotExist:
+        user = None
+
+    if user is not None and default_token_generator.check_token(user, token):
+        user.is_active = True
+        user.save()
+        return Response({"success": True, "message": "User is Verified"})
+    else:
+        return Response({"success": False, "message": "User is couldn't be verified"})
 
 
 class BalanceDepositeView(UpdateAPIView):

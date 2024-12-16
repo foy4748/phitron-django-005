@@ -17,5 +17,6 @@ urlpatterns = [
     path("logout/", views.LogOutView.as_view(), name="logout_people"),
     path("deposite/", views.BalanceDepositeView.as_view(), name="update_balance"),
     path("balance/", views.BalanceCheckView.as_view(), name="check_balance"),
+    path("active/<uid64>/<token>/", views.activate, name="activate_people"),
     path("", views.test_protected_route, name="test_protected_route"),
 ]
