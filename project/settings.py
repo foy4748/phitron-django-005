@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     # Apps
+    "testing",  # Test purpose app
     "people",
     "product",
     "wishlist",

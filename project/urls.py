@@ -26,5 +26,6 @@ urlpatterns = [
     path("purchase/", include("purchase_item.urls")),
     path("review/", include("review.urls")),
     path("auth/", include("people.urls")),
+    path("testing/", include("testing.urls")),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
 ]
