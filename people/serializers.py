@@ -1,7 +1,25 @@
+import base64
+from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.models import User
+from django.utils.http import urlsafe_base64_decode
 from rest_framework import serializers
 
 from people.models import People
+
+
+# Custom Validators
+def validate_base64(value):
+    try:
+        # Decode the base64 encoded string
+        decoded_value = urlsafe_base64_decode(value)
+        # Check if the decoded value is a valid integer (user primary key)
+        int(decoded_value)
+        return value
+    except (ValueError, TypeError, base64.binascii.Error):
+        raise serializers.ValidationError("Invalid base64 encoded user ID")
+
+
+# ============= End of Custom Validators ===========================
 
 
 class PeopleSerializer(serializers.ModelSerializer):
@@ -103,3 +121,13 @@ class BalanceCheckSerializer(serializers.ModelSerializer):
 class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(required=True, max_length=2028)
     new_password = serializers.CharField(required=True, max_length=2028)
+
+
+class ResetPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True, max_length=2028)
+
+
+class ResetPasswordPayloadSerializer(serializers.Serializer):
+    uid64 = serializers.CharField(validators=[validate_base64])
+    token = serializers.CharField(required=True, max_length=1024)
+    new_password = serializers.CharField(required=True, max_length=150)

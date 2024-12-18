@@ -14,6 +14,8 @@ from people.serializers import (
     ChangePasswordSerializer,
     LoginSerializer,
     RegistrationSerializer,
+    ResetPasswordPayloadSerializer,
+    ResetPasswordSerializer,
     UserListSerializer,
 )
 
@@ -183,5 +185,63 @@ class ChangePasswordView(APIView):
                 return Response({"old_password": "Wrong password."}, status=400)
             user.set_password(serializer.data.get("new_password"))
             user.save()
-            return Response({"message": "Password updated successfully."})
+            return Response(
+                {"success": True, "message": "Password updated successfully."}
+            )
         return Response(serializer.errors, status=400)
+
+
+class ResetPasswordView(APIView):
+    def patch(self, request):
+        s = ResetPasswordPayloadSerializer(data=request.data)
+        if s.is_valid():
+            uid64 = s.validated_data.get("uid64")
+            token = s.validated_data.get("token")
+            new_password = s.validated_data.get("new_password")
+            try:
+                uid = urlsafe_base64_decode(uid64).decode()
+                user = User._default_manager.get(pk=uid)
+            except User.DoesNotExist:
+                user = None
+                return Response({"success": False, "message": "Invalid Request 11"})
+            isUserOK = user is not None
+            isTokenOK = default_token_generator.check_token(user, token)
+
+            # print("isUserOK", isUserOK)
+            # print("isTokenOK", isTokenOK)
+
+            if isUserOK is False:
+                return Response(
+                    {"success": False, "message": "User is couldn't be verified"}
+                )
+
+            if isTokenOK is False:
+                return Response({"success": False, "message": "Invalid Request 22"})
+
+            user.set_password(new_password)
+            user.save()
+            return Response(
+                {"success": True, "message": "Password Reset was Successful"}
+            )
+        else:
+            return Response({"success": False, "message": "Invalid Request 33"})
+
+    # Requesting RESET LINK by POSTing the email
+    def post(self, request):
+        s = ResetPasswordSerializer(data=request.data)
+        if s.is_valid():
+            email = s.validated_data.get("email")
+            user = None
+            try:
+                user = User.objects.get(email=email)
+                token = default_token_generator.make_token(user)
+                print("token ", token)
+                uid = urlsafe_base64_encode(force_bytes(user.pk))
+                print("uid ", uid)
+                return Response(
+                    {"success": True, "message": "Check Email to reset your password"}
+                )
+            except User.DoesNotExist:
+                return Response({"success": False, "message": "User NOT found"})
+        else:
+            return Response({"success": False, "message": "Invalid Email"})
