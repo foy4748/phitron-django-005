@@ -11,6 +11,7 @@ from people.models import People
 from people.serializers import (
     BalanceCheckSerializer,
     BalanceDepositeSerializer,
+    ChangePasswordSerializer,
     LoginSerializer,
     RegistrationSerializer,
     UserListSerializer,
@@ -169,7 +170,18 @@ class LogOutView(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(["GET"])
-@permission_classes([IsAuthenticated])
-def test_protected_route(_):
-    return Response({"success": True, "message": "User is authenticated"})
+class ChangePasswordView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request):
+        user = request.user
+        serializer = ChangePasswordSerializer(data=request.data)
+        if serializer.is_valid():
+            if not user.check_password(
+                serializer.validated_data.get("old_password", None)
+            ):
+                return Response({"old_password": "Wrong password."}, status=400)
+            user.set_password(serializer.data.get("new_password"))
+            user.save()
+            return Response({"message": "Password updated successfully."})
+        return Response(serializer.errors, status=400)

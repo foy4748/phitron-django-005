@@ -98,3 +98,8 @@ class BalanceCheckSerializer(serializers.ModelSerializer):
     class Meta:
         model = People
         fields = ["balance"]
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True, max_length=2028)
+    new_password = serializers.CharField(required=True, max_length=2028)
