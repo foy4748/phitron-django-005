@@ -73,11 +73,13 @@ class UserRegistrationApiView(APIView):
             # email.attach_alternative(email_body, "text/html")
             # email.send()
 
+            message = "Click the button below to activate your account"
             user_activation_email(
                 user_email=user.email,
                 subject="ACTIVATE YOUR ACCOUNT",
-                uid64=uid,
-                token=token,
+                message=message,
+                success_url=f"/activate/{uid}/{token}/",
+                domain="http://localhost:3000",
             )
             return Response(
                 {
@@ -248,6 +250,14 @@ class ResetPasswordView(APIView):
                 print("token ", token)
                 uid = urlsafe_base64_encode(force_bytes(user.pk))
                 print("uid ", uid)
+                message = "Click the button below to RESET your account password"
+                user_activation_email(
+                    user_email=user.email,
+                    subject="RESET YOUR ACCOUNT Password",
+                    message=message,
+                    success_url=f"/reset-password/{uid}/{token}/",
+                    domain="http://localhost:3000",
+                )
                 return Response(
                     {"success": True, "message": "Check Email to reset your password"}
                 )

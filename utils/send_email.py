@@ -5,15 +5,15 @@ from django.utils.html import strip_tags
 from django.conf import settings
 
 
-def user_activation_email(user_email, subject, uid64, token):
+def user_activation_email(user_email, subject, message, success_url, domain):
     sender = settings.EMAIL_HOST_USER
     recipient_list = [user_email]
     context = {
-        "message": "Click the button below to activate your account",
+        "message": message,
         "username": "test",
         # Need to fetch the domain from ENV : FrontEnd Link
-        "domain": "http://localhost:3000",
-        "success_url": f"/activate/{uid64}/{token}/",
+        "domain": domain,
+        "success_url": success_url,
     }
     html_message = render_to_string("account_activation_email.html", context)
     plain_message = strip_tags(html_message)
