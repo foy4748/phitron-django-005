@@ -22,6 +22,16 @@ def product_purchase_email_preview(request):
     return render(request, "product_purchase.html", context)
 
 
+def account_activation_email_preview(request):
+    context = {
+        "message": "Click the button below to activate your account",
+        "username": "test",
+        "domain": "http://localhost:3000",
+        "success_url": "/activate/test/test/",
+    }
+    return render(request, "account_activation_email.html", context)
+
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def test_protected_route(_):

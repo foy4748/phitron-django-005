@@ -32,6 +32,8 @@ from django.utils.encoding import force_bytes
 
 from django.contrib.auth import authenticate, login, logout
 
+from utils.send_email import user_activation_email
+
 # from rest_framework.authtoken.models import Token
 
 # for sending email
@@ -70,11 +72,17 @@ class UserRegistrationApiView(APIView):
             # email = EmailMultiAlternatives(email_subject, "", to=[user.email])
             # email.attach_alternative(email_body, "text/html")
             # email.send()
+
+            user_activation_email(
+                user_email=user.email,
+                subject="ACTIVATE YOUR ACCOUNT",
+                uid64=uid,
+                token=token,
+            )
             return Response(
                 {
-                    "message": "Check your mail for confirmation",
-                    "token": token,
-                    "uid": uid,
+                    "success": True,
+                    "message": "Check your email for confirmation",
                 }
             )
         return Response(serializer.errors)
@@ -182,7 +190,9 @@ class ChangePasswordView(APIView):
             if not user.check_password(
                 serializer.validated_data.get("old_password", None)
             ):
-                return Response({"old_password": "Wrong password."}, status=400)
+                return Response(
+                    {"success": False, "old_password": "Wrong password."}, status=400
+                )
             user.set_password(serializer.data.get("new_password"))
             user.save()
             return Response(
