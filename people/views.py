@@ -119,6 +119,16 @@ class UserLoginView(APIView):
         h = dict()
         h["Authorization"] = f"Token {token.key}"
         h["Content-Type"] = "application/json"
+
+        user_image_url = None
+        user_phone_no = None
+
+        try:
+            user_image_url = user.people_info.image_url
+            user_phone_no = user.people_info.phone_no
+        except:
+            pass
+
         return Response(
             {
                 "success": True,
@@ -129,8 +139,9 @@ class UserLoginView(APIView):
                 "email": user.email,
                 "first_name": user.first_name,
                 "last_name": user.last_name,
-                "image_url": user.people_info.image_url,
-                "phone_no": user.people_info.phone_no,
+                "image_url": user_image_url,
+                "phone_no": user_phone_no,
+                "isAdmin": user.is_staff,
             },
             headers=h,
         )

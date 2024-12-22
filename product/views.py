@@ -9,7 +9,7 @@ from rest_framework.generics import (
     RetrieveAPIView,
     DestroyAPIView,
 )
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 
 from product.models import Product, ProductCategory
 from product.serializers import (
@@ -62,13 +62,45 @@ class SingleProductView(RetrieveAPIView):
     queryset = Product.objects.all()
 
 
+# User Specific
+class UserSpecificProducts(ProductListView):
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        queryset = Product.objects.filter(product_owner=self.request.user)
+        return queryset
+
+
 class DeleteProductView(DestroyAPIView):
     serializer_class = ProductSerializer
     permission_classes = [IsAuthenticated, IsProductOwner]
-    queryset = Product.objects.all()
+
+    def get_queryset(self):
+        queryset = Product.objects.filter(product_owner=self.request.user)
+        return queryset
 
 
 class UpdateProductView(UpdateAPIView):
     serializer_class = ProductUpdateSerializer
     permission_classes = [IsAuthenticated, IsProductOwner]
+
+    def get_queryset(self):
+        queryset = Product.objects.filter(product_owner=self.request.user)
+        return queryset
+
+
+# Admin Specific
+class AdminSpecificProducts(ProductListView):
+    permission_classes = [IsAuthenticated, IsAdminUser]
+
+
+class DeleteProductByAdminView(DestroyAPIView):
+    serializer_class = ProductSerializer
+    permission_classes = [IsAuthenticated, IsAdminUser]
+    queryset = Product.objects.all()
+
+
+class UpdateProductByAdminView(UpdateAPIView):
+    serializer_class = ProductUpdateSerializer
+    permission_classes = [IsAuthenticated, IsAdminUser]
     queryset = Product.objects.all()
