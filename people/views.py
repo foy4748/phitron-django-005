@@ -135,6 +135,7 @@ class UserLoginView(APIView):
                 "token_was_created": is_token_was_created,
                 "message": "User LoggedIn",
                 "token": token.key,
+                "username": user.username,
                 "user_id": user.id,
                 "email": user.email,
                 "first_name": user.first_name,
