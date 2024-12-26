@@ -10,6 +10,7 @@ from product.views import (
     DeleteProductByAdminView,
     DeleteProductView,
     ProductListView,
+    RandomProductListView,
     SingleProductView,
     UpdateProductByAdminView,
     UpdateProductView,
@@ -23,6 +24,11 @@ urlpatterns = [
     # Product urls
     path("", CreateProductView.as_view(), name="product_create"),
     path("product-list/", ProductListView.as_view(), name="product_list"),
+    path(
+        "random-product-list/",
+        RandomProductListView.as_view(),
+        name="random_product_list",
+    ),
     path("product-detail/<pk>/", SingleProductView.as_view(), name="product_detail"),
     # User Specific
     path(

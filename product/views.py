@@ -57,6 +57,11 @@ class ProductListView(ListAPIView):
     search_fields = ["product_name", "description"]
 
 
+class RandomProductListView(ListAPIView):
+    serializer_class = ProductSerializer
+    queryset = Product.objects.all().order_by("?")[:12]
+
+
 class SingleProductView(RetrieveAPIView):
     serializer_class = ProductDetailSerializer
     queryset = Product.objects.all()

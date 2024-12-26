@@ -19,6 +19,8 @@ auth_n_res = rq.post(login_url, json=user_credentials, headers=common_headers)
 d = auth_n_res.json()
 common_headers["Authorization"] = "Token " + d.get("token", "")
 
+print(d)
+
 ### End of Authenticaton
 
 # Data Field Lists
@@ -40,7 +42,7 @@ product_names = [
     "Cinnamon",
 ]
 
-product_categories = [1, 2, 3, 4]
+product_categories = [1, 2, 3, 4, 5, 6, 7]
 
 product_images = [
     "https://chaldn.com/_mpimage/deshi-peyaj-local-onion-50-gm-1-kg?src=https%3A%2F%2Feggyolk.chaldal.com%2Fapi%2FPicture%2FRaw%3FpictureId%3D52358&q=low&v=1&m=400&webp=1",
@@ -121,4 +123,8 @@ for _ in range(50):
         "category": random.choice(product_categories),
     }
 
-    rq.post(product_create_url, json=single_product_instance, headers=common_headers)
+    res = rq.post(
+        product_create_url, json=single_product_instance, headers=common_headers
+    )
+    rr = res.json()
+    print(rr)
