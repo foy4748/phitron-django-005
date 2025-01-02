@@ -21,6 +21,13 @@ from product.serializers import (
 )
 
 # from rest_framework.response import Response
+from rest_framework.pagination import PageNumberPagination
+
+
+class ProductListPagination(PageNumberPagination):
+    page_size = 10  # Number of items per page
+    page_size_query_param = "limit"
+    max_page_size = 50
 
 
 # Create your views here.
@@ -49,6 +56,7 @@ class CreateProductView(CreateAPIView):
 class ProductListView(ListAPIView):
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
+    pagination_class = ProductListPagination
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields = {
         "category": ["exact"],

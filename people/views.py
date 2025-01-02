@@ -46,10 +46,10 @@ from utils.send_email import user_activation_email
 class UserRegistrationApiView(APIView):
     serializer_class = RegistrationSerializer
 
-    def get(self):
-        users = User.objects.all()
-        serializer = UserListSerializer(users, many=True)
-        return Response(serializer.data)
+    # def get(self, request):
+    #     users = User.objects.all()
+    #     serializer = UserListSerializer(users, many=True)
+    #     return Response(serializer.data)
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
