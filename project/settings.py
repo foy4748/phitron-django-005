@@ -31,7 +31,12 @@ SECRET_KEY = "django-insecure-x%-83g5=ascuo_=r2kff_!aq57u-^!&lancs(gthy9^adgrl&4
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DEBUG", default=True)
 
-ALLOWED_HOSTS = ["127.0.0.1", ".vercel.app", "localhost"]
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    ".vercel.app",
+    "localhost",
+    "phitron-sdt-assignment-05-frontend.vercel.app",
+]
 
 
 # Application definition
@@ -170,6 +175,7 @@ REST_FRAMEWORK = {
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    "https://phitron-sdt-assignment-05-frontend.vercel.app",
 ]
 
 # Email Related
