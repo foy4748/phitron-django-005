@@ -79,7 +79,7 @@ class UserRegistrationApiView(APIView):
                 subject="ACTIVATE YOUR ACCOUNT",
                 message=message,
                 success_url=f"/activate/{uid}/{token}/",
-                domain="http://localhost:3000",
+                domain="https://phitron-sdt-assignment-05-frontend.vercel.app",
             )
             return Response(
                 {
@@ -268,7 +268,7 @@ class ResetPasswordView(APIView):
                     subject="RESET YOUR ACCOUNT Password",
                     message=message,
                     success_url=f"/reset-password/{uid}/{token}/",
-                    domain="http://localhost:3000",
+                    domain="https://phitron-sdt-assignment-05-frontend.vercel.app",
                 )
                 return Response(
                     {"success": True, "message": "Check Email to reset your password"}

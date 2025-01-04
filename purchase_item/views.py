@@ -41,15 +41,16 @@ def PurchaseItemView(request):
             purchased_items.append(single_purchased_item)
 
         s = PurchasedItemSerializer(purchased_items, many=True)
-        # Emailing Confirmations
-        # send_email.success_email(
-        #     request=request,
-        #     subject="Puchased Items successfully",
-        #     message="Great, You've puchased these",
-        #     success_url="/",
-        #     # Need to UPDATE
-        #     domain="/",
-        # )
+
+        # Sending confirmation Email
+        send_email.purchase_confirmation_email(
+            user_email=request.user.email,
+            subject="Puchased Items successfully",
+            message="Puchase Items were Successful",
+            success_url="/dashboard/user/purchase-history",
+            domain="https://phitron-sdt-assignment-05-frontend.vercel.app",
+            purchase_history=s.data,
+        )
         return Response(
             {
                 "success": True,

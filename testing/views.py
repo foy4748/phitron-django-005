@@ -13,9 +13,9 @@ def product_purchase_email_preview(request):
     _purchase_history = PurchasedItem.objects.all()
     purchase_history = PurchasedItemSerializer(_purchase_history, many=True)
     context = {
-        "message": "TEST MESSAGE",
+        "message": "You've successfully purchased these",
         "username": "test",
-        "domain": "http://localhost:3001",
+        "domain": "https://phitron-sdt-assignment-05-frontend.vercel.app",
         "success_url": "/auth/activate/test/test/",
         "purchase_history": purchase_history.data,
     }
@@ -26,7 +26,7 @@ def account_activation_email_preview(request):
     context = {
         "message": "Click the button below to activate your account",
         "username": "test",
-        "domain": "http://localhost:3000",
+        "domain": "https://phitron-sdt-assignment-05-frontend.vercel.app",
         "success_url": "/activate/test/test/",
     }
     return render(request, "account_activation_email.html", context)
