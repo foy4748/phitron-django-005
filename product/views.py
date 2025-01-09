@@ -55,7 +55,7 @@ class CreateProductView(CreateAPIView):
 
 class ProductListView(ListAPIView):
     serializer_class = ProductSerializer
-    queryset = Product.objects.all()
+    queryset = Product.objects.all().order_by("-created_at", "-updated_at")
     pagination_class = ProductListPagination
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields = {
@@ -80,7 +80,9 @@ class UserSpecificProducts(ProductListView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        queryset = Product.objects.filter(product_owner=self.request.user)
+        queryset = Product.objects.filter(product_owner=self.request.user).order_by(
+            "-created_at", "-updated_at"
+        )
         return queryset
 
 
