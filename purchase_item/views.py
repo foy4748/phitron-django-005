@@ -10,6 +10,12 @@ from purchase_item.models import PurchasedItem
 from purchase_item.serializers import PurchasedItemSerializer
 from utils import send_email
 
+import environ
+from sslcommerz_lib import SSLCOMMERZ
+
+# reading .env file
+env = environ.Env()
+environ.Env.read_env()
 
 ## Create your views here.
 
@@ -65,6 +71,38 @@ def PurchaseItemView(request):
                 "message": "Product(s) Purchase FAILED. Insufficient Balance",
             }
         )
+
+
+# Payment Related
+
+
+def createPaymentIntent():
+    # Payment Related
+    payment_settings = {
+        "store_id": env("SSLCOMMERZ_STORE_KEY"),
+        "store_pass": env("SSLCOMMERZ_STORE_PASS"),
+        "issandbox": True,
+    }
+    print(payment_settings)
+    sslcz = SSLCOMMERZ(payment_settings)
+    post_body = {}
+    post_body["total_amount"] = 100.26
+    post_body["currency"] = "BDT"
+    post_body["tran_id"] = "12345"
+    post_body["cus_email"] = "faisaljfcl@gmail.com"
+    post_body["success_url"] = "http://localhost:3001"
+    post_body["cus_phone"] = "01700000000"
+    post_body["cus_add1"] = "customer address"
+    post_body["cus_city"] = "Dhaka"
+    post_body["cus_country"] = "Bangladesh"
+    post_body["shipping_method"] = "NO"
+    post_body["product_name"] = "Test"
+    post_body["product_category"] = "Test Category"
+    post_body["product_profile"] = "general"
+    payment_intent = sslcz.createSession(post_body)
+    # END OF Payment Related ----------
+    # print(payment_intent)
+    return payment_intent
 
 
 # User specific Purchased Item List

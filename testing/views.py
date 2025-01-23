@@ -3,10 +3,11 @@
 from django.shortcuts import render
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.views import Response
+from rest_framework.views import APIView, Response
 
 from purchase_item.models import PurchasedItem
 from purchase_item.serializers import PurchasedItemSerializer
+from purchase_item.views import createPaymentIntent
 
 
 def product_purchase_email_preview(request):
@@ -30,6 +31,12 @@ def account_activation_email_preview(request):
         "success_url": "/activate/test/test/",
     }
     return render(request, "account_activation_email.html", context)
+
+
+class PaymentTesting(APIView):
+    def get(self, request):
+        res = createPaymentIntent()
+        return Response(res)
 
 
 @api_view(["GET"])
