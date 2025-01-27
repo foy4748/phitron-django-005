@@ -4,5 +4,9 @@ from transaction.views import FailedTransaction  # ,include
 
 urlpatterns = [
     # Review urls
-    path("failed-transaction/", FailedTransaction, name="failed_transaction"),
+    path(
+        "failed-transaction/<str:transaction_id>/",
+        FailedTransaction,
+        name="failed_transaction",
+    ),
 ]

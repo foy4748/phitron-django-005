@@ -42,7 +42,7 @@ def CreatePaymentIntent(request):
         transaction_id = uuid.uuid4()  # Generates a random UUID
         print(transaction_id)
         payment_intent = createPaymentIntent(
-            current_total, transaction_id, request.user.email
+            current_total, transaction_id=transaction_id, user_email=request.user.email
         )
         return Response(payment_intent)
     else:
