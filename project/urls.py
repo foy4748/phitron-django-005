@@ -27,6 +27,7 @@ urlpatterns = [
     path("wish-list/", include("wishlist.urls")),
     path("cart/", include("cart_item.urls")),
     path("purchase/", include("purchase_item.urls")),
+    path("transaction/", include("transaction.urls")),
     path("review/", include("review.urls")),
     path("auth/", include("people.urls")),
     path("testing/", include("testing.urls")),
