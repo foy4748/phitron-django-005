@@ -1,0 +1,6 @@
+DEPOSIT = "DEPOSIT"
+PURCHASE = "PURCHASE"
+TRANSACTION_TYPE_CHOICES = [
+    (DEPOSIT, "Deposit"),
+    (PURCHASE, "Purchase"),
+]

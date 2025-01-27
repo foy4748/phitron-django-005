@@ -14,6 +14,9 @@ from pathlib import Path
 import environ
 import os
 
+# FrontEnd Link
+FRONTEND_LINK = "http://localhost:3000"
+
 env = environ.Env()
 environ.Env.read_env()
 
@@ -62,6 +65,7 @@ INSTALLED_APPS = [
     "cart_item",
     "purchase_item",
     "review",
+    "transaction",
 ]
 
 MIDDLEWARE = [
