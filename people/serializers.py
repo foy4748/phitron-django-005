@@ -101,10 +101,11 @@ class LoginSerializer(serializers.Serializer):
 
 class BalanceDepositeSerializer(serializers.ModelSerializer):
     amount = serializers.DecimalField(decimal_places=2, default=0.00, max_digits=12)
+    transaction_id = serializers.CharField(max_length=100)
 
     class Meta:
         model = People
-        fields = ["balance", "amount"]
+        fields = ["balance", "amount", "transaction_id"]
 
     def update(self, instance, validated_data):
         instance.balance += validated_data["amount"]

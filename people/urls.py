@@ -15,6 +15,11 @@ urlpatterns = [
     path("register/", views.UserRegistrationApiView.as_view(), name="register_people"),
     path("login/", views.UserLoginView.as_view(), name="login_people"),
     path("logout/", views.LogOutView.as_view(), name="logout_people"),
+    path(
+        "deposite-create-intent/",
+        views.BalanceDepositeCreateIntentView,
+        name="update_balance_create_intent",
+    ),
     path("deposite/", views.BalanceDepositeView.as_view(), name="update_balance"),
     path("balance/", views.BalanceCheckView.as_view(), name="check_balance"),
     path(

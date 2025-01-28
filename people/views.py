@@ -1,3 +1,4 @@
+import uuid
 from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
@@ -16,7 +17,6 @@ from people.serializers import (
     RegistrationSerializer,
     ResetPasswordPayloadSerializer,
     ResetPasswordSerializer,
-    UserListSerializer,
 )
 
 from rest_framework.views import APIView
@@ -32,6 +32,7 @@ from django.utils.encoding import force_bytes
 
 from django.contrib.auth import authenticate, login, logout
 
+from purchase_item.views import createPaymentIntent
 from utils.send_email import user_activation_email
 
 # from rest_framework.authtoken.models import Token
@@ -163,6 +164,18 @@ def activate(_, uid64, token):
         return Response({"success": True, "message": "User is Verified"})
     else:
         return Response({"success": False, "message": "User is couldn't be verified"})
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def BalanceDepositeCreateIntentView(request):
+    transaction_id = uuid.uuid4()  # Generates a random UUID
+    print(transaction_id)
+    current_total = request.data.get("amount", 0)
+    payment_intent = createPaymentIntent(
+        current_total, transaction_id=transaction_id, user_email=request.user.email
+    )
+    return Response(payment_intent)
 
 
 class BalanceDepositeView(UpdateAPIView):
