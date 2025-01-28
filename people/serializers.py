@@ -103,7 +103,7 @@ class LoginSerializer(serializers.Serializer):
 
 class BalanceDepositeSerializer(serializers.ModelSerializer):
     amount = serializers.DecimalField(decimal_places=2, default=0.00, max_digits=12)
-    transaction_id = serializers.CharField(max_length=100)
+    transaction_id = serializers.CharField(max_length=100, write_only=True)
 
     class Meta:
         model = People

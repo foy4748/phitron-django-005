@@ -14,12 +14,14 @@ from pathlib import Path
 import environ
 import os
 
-# FrontEnd Link
-FRONTEND_LINK = "http://localhost:3000"
 
 env = environ.Env()
 environ.Env.read_env()
 
+# FrontEnd Link
+# FRONTEND_LINK = "http://localhost:3000"
+# FRONTEND_LINK = "https://phitron-sdt-assignment-05-frontend.vercel.app"
+FRONTEND_LINK = env("FRONTEND_LINK")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
