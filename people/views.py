@@ -1,4 +1,5 @@
 import uuid
+from project.settings import FRONTEND_LINK
 from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
@@ -172,8 +173,14 @@ def BalanceDepositeCreateIntentView(request):
     transaction_id = uuid.uuid4()  # Generates a random UUID
     print(transaction_id)
     current_total = request.data.get("amount", 0)
+    success_url = (
+        f"{FRONTEND_LINK}/api/deposite-success/{transaction_id}/{str(current_total)}"
+    )
     payment_intent = createPaymentIntent(
-        current_total, transaction_id=transaction_id, user_email=request.user.email
+        current_total,
+        transaction_id=transaction_id,
+        user_email=request.user.email,
+        success_url=success_url,
     )
     return Response(payment_intent)
 

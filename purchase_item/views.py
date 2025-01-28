@@ -123,6 +123,7 @@ def createPaymentIntent(
     amount,
     transaction_id,
     user_email,
+    success_url=None,
     user_phone="",
     user_address="",
     user_city="",
@@ -134,14 +135,20 @@ def createPaymentIntent(
         "store_pass": env("SSLCOMMERZ_STORE_PASS"),
         "issandbox": True,
     }
-    print(payment_settings)
     sslcz = SSLCOMMERZ(payment_settings)
     post_body = {}
+
+    if success_url is None:
+        post_body[
+            "success_url"
+        ] = f"{FRONTEND_LINK}/api/payment-success/{transaction_id}"
+    else:
+        post_body["success_url"] = success_url
+
     post_body["total_amount"] = amount
     post_body["currency"] = "BDT"
     post_body["tran_id"] = transaction_id
     post_body["cus_email"] = user_email
-    post_body["success_url"] = f"{FRONTEND_LINK}/api/payment-success/{transaction_id}"
     # post_body["success_url"] = f"{FRONTEND_LINK}"
     post_body["fail_url"] = f"{FRONTEND_LINK}/api/payment-failed/{transaction_id}"
     post_body["cus_phone"] = "017000000000"
