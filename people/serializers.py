@@ -5,6 +5,8 @@ from django.utils.http import urlsafe_base64_decode
 from rest_framework import serializers
 
 from people.models import People
+from transaction.constants import DEPOSIT
+from transaction.models import Transaction
 
 
 # Custom Validators
@@ -110,6 +112,13 @@ class BalanceDepositeSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance.balance += validated_data["amount"]
         instance.save()
+        single_transaction = Transaction(
+            type=DEPOSIT,
+            amount=validated_data["amount"],
+            transaction_id=validated_data["transaction_id"],
+            buyer=self.context["request"].user,
+        )
+        single_transaction.save()
         return instance
 
 
