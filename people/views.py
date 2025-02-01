@@ -3,6 +3,7 @@ from project.settings import FRONTEND_LINK
 from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
+from datetime import datetime, timezone, timedelta
 
 # from rest_framework import viewsets
 from rest_framework.decorators import api_view, permission_classes
@@ -131,6 +132,9 @@ class UserLoginView(APIView):
         except:
             pass
 
+        # Creating Token Expirey Date
+        current_time = datetime.now(timezone.utc)
+        expire_login = (current_time + timedelta(hours=1)).isoformat()
         return Response(
             {
                 "success": True,
@@ -145,6 +149,7 @@ class UserLoginView(APIView):
                 "image_url": user_image_url,
                 "phone_no": user_phone_no,
                 "isAdmin": user.is_staff,
+                "expire_login": expire_login,
             },
             headers=h,
         )
