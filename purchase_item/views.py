@@ -156,8 +156,8 @@ def createPaymentIntent(
     post_body["cus_city"] = user_city
     post_body["cus_country"] = user_country
     post_body["shipping_method"] = "NO"
-    post_body["product_name"] = "Test"
-    post_body["product_category"] = "Test Category"
+    post_body["product_name"] = transaction_id
+    post_body["product_category"] = transaction_id
     post_body["product_profile"] = "general"
     payment_intent = sslcz.createSession(post_body)
     # END OF Payment Related ----------
