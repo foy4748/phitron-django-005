@@ -38,20 +38,20 @@ def CreatePaymentIntent(request):
             item.product.unit_price
         )
 
-    if current_total <= float(request.user.people_info.balance):
-        transaction_id = uuid.uuid4()  # Generates a random UUID
-        print(transaction_id)
-        payment_intent = createPaymentIntent(
-            current_total, transaction_id=transaction_id, user_email=request.user.email
-        )
-        return Response(payment_intent)
-    else:
-        return Response(
-            {
-                "success": False,
-                "message": "Product(s) Purchase FAILED. Insufficient Balance",
-            }
-        )
+    # if current_total <= float(request.user.people_info.balance):
+    transaction_id = uuid.uuid4()  # Generates a random UUID
+    print(transaction_id)
+    payment_intent = createPaymentIntent(
+        current_total, transaction_id=transaction_id, user_email=request.user.email
+    )
+    return Response(payment_intent)
+    # else:
+    #     return Response(
+    #         {
+    #             "success": False,
+    #             "message": "Product(s) Purchase FAILED. Insufficient Balance",
+    #         }
+    #     )
 
 
 # Performing Purchase operation of items in the cart
@@ -67,53 +67,53 @@ def PurchaseItemView(request, transaction_id):
             item.product.unit_price
         )
 
-    if current_total <= float(request.user.people_info.balance):
-        for item in cart_items:
-            single_purchased_item = PurchasedItem(
-                purchased_item_owner=request.user,
-                product=item.product,
-                unit_price=item.product.unit_price,
-                unit_name=item.product.unit_name,
-                quantity=item.quantity,
-            )
-            item.delete()
-            single_purchased_item.save()
-            single_transaction = Transaction(
-                type=PURCHASE,
-                purchased_product=single_purchased_item,
-                amount=float(item.quantity) * float(item.product.unit_price),
-                transaction_id=transaction_id,
-                buyer=request.user,
-                seller=item.product.product_owner,
-            )
-            single_transaction.save()
-            purchased_items.append(single_purchased_item)
+    # if current_total <= float(request.user.people_info.balance):
+    for item in cart_items:
+        single_purchased_item = PurchasedItem(
+            purchased_item_owner=request.user,
+            product=item.product,
+            unit_price=item.product.unit_price,
+            unit_name=item.product.unit_name,
+            quantity=item.quantity,
+        )
+        item.delete()
+        single_purchased_item.save()
+        single_transaction = Transaction(
+            type=PURCHASE,
+            purchased_product=single_purchased_item,
+            amount=float(item.quantity) * float(item.product.unit_price),
+            transaction_id=transaction_id,
+            buyer=request.user,
+            seller=item.product.product_owner,
+        )
+        single_transaction.save()
+        purchased_items.append(single_purchased_item)
 
-        s = PurchasedItemSerializer(purchased_items, many=True)
+    s = PurchasedItemSerializer(purchased_items, many=True)
 
-        # Sending confirmation Email
-        send_email.purchase_confirmation_email(
-            user_email=request.user.email,
-            subject="Puchased Items successfully",
-            message="Puchase Items were Successful",
-            success_url="/dashboard/user/purchase-history",
-            domain="https://phitron-sdt-assignment-05-frontend.vercel.app",
-            purchase_history=s.data,
-        )
-        return Response(
-            {
-                "success": True,
-                "message": "Product(s) Purchased Successfully",
-                "purchased_items": s.data,
-            }
-        )
-    else:
-        return Response(
-            {
-                "success": False,
-                "message": "Product(s) Purchase FAILED. Insufficient Balance",
-            }
-        )
+    # Sending confirmation Email
+    send_email.purchase_confirmation_email(
+        user_email=request.user.email,
+        subject="Puchased Items successfully",
+        message="Puchase Items were Successful",
+        success_url="/dashboard/user/purchase-history",
+        domain="https://phitron-sdt-assignment-05-frontend.vercel.app",
+        purchase_history=s.data,
+    )
+    return Response(
+        {
+            "success": True,
+            "message": "Product(s) Purchased Successfully",
+            "purchased_items": s.data,
+        }
+    )
+    # else:
+    #     return Response(
+    #         {
+    #             "success": False,
+    #             "message": "Product(s) Purchase FAILED. Insufficient Balance",
+    #         }
+    #     )
 
 
 # Payment Related
