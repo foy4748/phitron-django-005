@@ -176,3 +176,16 @@ class PurchasedItemListView(ListAPIView):
     def get_queryset(self):
         data = PurchasedItem.objects.filter(purchased_item_owner=self.request.user)
         return data
+
+
+# Seller specific Purchased Item List
+class PurchasedItemOrderListView(ListAPIView):
+    serializer_class = PurchasedItemSerializer
+    permission_classes = [IsAuthenticated]
+    filter_backends = [OrderingFilter]
+    ordering_fields = ["created_at", "updated_at"]
+    ordering = ["-created_at"]
+
+    def get_queryset(self):
+        data = PurchasedItem.objects.filter(product__product_owner=self.request.user)
+        return data
