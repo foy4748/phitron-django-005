@@ -1,0 +1,8 @@
+.venv
+/**/*.pyc
+/**/__pycache__
+/**/node_modules
+.vercel
+public
+db.sqlite3
+
