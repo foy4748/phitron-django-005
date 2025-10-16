@@ -16,12 +16,15 @@ from utils import send_email
 
 from project.settings import FRONTEND_LINK
 
-import environ
+# import environ
+import os
+from dotenv import load_dotenv
 from sslcommerz_lib import SSLCOMMERZ
 
 # reading .env file
-env = environ.Env()
-environ.Env.read_env()
+# env = environ.Env()
+# environ.Env.read_env()
+load_dotenv()
 
 ## Create your views here.
 
@@ -131,8 +134,8 @@ def createPaymentIntent(
 ):
     # Payment Related
     payment_settings = {
-        "store_id": env("SSLCOMMERZ_STORE_KEY"),
-        "store_pass": env("SSLCOMMERZ_STORE_PASS"),
+        "store_id": os.environ.get("SSLCOMMERZ_STORE_KEY"),
+        "store_pass": os.environ.get("SSLCOMMERZ_STORE_PASS"),
         "issandbox": True,
     }
     sslcz = SSLCOMMERZ(payment_settings)
