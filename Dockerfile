@@ -49,3 +49,4 @@ EXPOSE 3001
  
 # Start the application using Gunicorn
 CMD ["gunicorn", "--bind", "0.0.0.0:3001", "--workers", "3", "project.wsgi:application"]
+# CMD ["python", "manage.py", "runserver", "0.0.0.0:3001"]
