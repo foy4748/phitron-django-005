@@ -42,6 +42,7 @@ DEBUG = os.environ.get("DEBUG", "False") == "True"
 ALLOWED_HOSTS = [
     "127.0.0.1",
     ".vercel.app",
+    "nextjs-app",
     "localhost",
     "phitron-sdt-assignment-05-frontend.vercel.app",
 ]
@@ -124,6 +125,16 @@ DATABASES = {
         "PASSWORD": os.environ.get("PGPASSWORD"),
         "HOST": os.environ.get("PGHOST"),
         "PORT": os.environ.get("PGPORT"),
+        "OPTIONS": {
+            "sslmode": "require",
+            "sslrootcert": "/etc/ssl/certs/ca-certificates.crt",  # Important for Docker
+            "connect_timeout": 10,
+            "keepalives": 1,
+            "keepalives_idle": 30,
+            "keepalives_interval": 10,
+            "keepalives_count": 5,
+        },
+        "CONN_MAX_AGE": 600,  # Keep connections longer
     }
 }
 
@@ -184,6 +195,7 @@ REST_FRAMEWORK = {
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    "http://nextjs-app:3000",
     "https://phitron-sdt-assignment-05-frontend.vercel.app",
 ]
 
